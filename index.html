@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-accent="cyan">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TYPEFLOW — Precision Typing Practice</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="app-viewport">
+    <!-- TOP NAVIGATION -->
+    <header class="header">
+      <div class="brand">
+        <span class="brand-icon">⚡</span>
+        <span class="brand-name">TYPE<span class="accent-text">FLOW</span></span>
+      </div>
+
+      <div class="header-tools">
+        <div class="lang-toggle-bar">
+          <button class="lang-btn active" data-lang="en" id="btn-lang-en">English</button>
+          <button class="lang-btn" data-lang="km" id="btn-lang-km">ខ្មែរ</button>
+        </div>
+
+        <button class="icon-btn" id="btn-settings-modal" title="Settings" aria-label="Settings">
+          ⚙️
+        </button>
+
+        <button class="icon-btn" id="btn-theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
+          🌙
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN TYPING CONTAINER -->
+    <main class="typing-workspace">
+      <!-- LIVE STATS (ABOVE TEXT AREA) -->
+      <div class="live-metrics" id="live-metrics">
+        <div class="metric-block">
+          <span class="metric-val" id="live-wpm">0</span>
+          <span class="metric-lbl">WPM</span>
+        </div>
+        <div class="metric-block">
+          <span class="metric-val" id="live-acc">100%</span>
+          <span class="metric-lbl">ACC</span>
+        </div>
+        <div class="metric-block">
+          <span class="metric-val accent-text" id="live-timer">30</span>
+          <span class="metric-lbl" id="timer-label">SEC</span>
+        </div>
+      </div>
+
+      <!-- TYPING AREA CONTAINER -->
+      <div class="text-stage-wrapper" id="text-stage-wrapper">
+        <input type="text" id="type-input" class="type-input" autocomplete="off" autocapitalize="none" spellcheck="false" autofocus>
+        
+        <div class="focus-notice" id="focus-notice">
+          <span>Click or press any key to focus</span>
+        </div>
+
+        <div class="text-stage" id="text-stage">
+          <div class="caret smooth" id="caret"></div>
+          <div class="words-container" id="words-container"></div>
+        </div>
+      </div>
+
+      <!-- BOTTOM CONTROL TOOLBAR -->
+      <div class="control-panel">
+        <div class="panel-group">
+          <button class="mode-btn active" data-mode-type="time">Time</button>
+          <button class="mode-btn" data-mode-type="words">Words</button>
+          <button class="mode-btn" data-mode-type="custom">Custom</button>
+        </div>
+
+        <div class="panel-divider"></div>
+
+        <!-- TIME SUB-OPTIONS -->
+        <div class="panel-group mode-options" id="opt-time">
+          <button class="option-btn" data-val="15">15s</button>
+          <button class="option-btn active" data-val="30">30s</button>
+          <button class="option-btn" data-val="60">60s</button>
+          <button class="option-btn" data-val="120">120s</button>
+        </div>
+
+        <!-- WORDS SUB-OPTIONS -->
+        <div class="panel-group mode-options hidden" id="opt-words">
+          <button class="option-btn" data-val="10">10</button>
+          <button class="option-btn" data-val="25">25</button>
+          <button class="option-btn" data-val="50">50</button>
+          <button class="option-btn" data-val="100">100</button>
+        </div>
+
+        <div class="panel-divider"></div>
+
+        <!-- CONTENT TYPE -->
+        <div class="panel-group" id="opt-content-type">
+          <button class="content-btn active" data-content="words">Words</button>
+          <button class="content-btn" data-content="sentences">Sentences</button>
+          <button class="content-btn" data-content="quotes">Quotes</button>
+        </div>
+
+        <div class="panel-divider"></div>
+
+        <button class="icon-action-btn" id="btn-restart" title="Restart Test (Tab)">
+          🔄 <kbd>Tab</kbd>
+        </button>
+      </div>
+
+      <!-- VIRTUAL KEYBOARD -->
+      <div class="keyboard-wrapper" id="keyboard-wrapper">
+        <div class="virtual-keyboard" id="virtual-keyboard"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- RESULT MODAL -->
+  <div class="modal-backdrop" id="modal-result">
+    <div class="modal-card result-card">
+      <div class="result-header">
+        <span class="result-badge hidden" id="result-pb-badge">🎉 New Personal Best!</span>
+        <h2>Test Results</h2>
+      </div>
+
+      <div class="primary-result">
+        <div class="big-stat">
+          <span class="big-val accent-text" id="res-wpm">0</span>
+          <span class="big-lbl">WPM</span>
+        </div>
+        <div class="big-stat">
+          <span class="big-val" id="res-acc">0%</span>
+          <span class="big-lbl">Accuracy</span>
+        </div>
+      </div>
+
+      <div class="secondary-results-grid">
+        <div class="stat-box">
+          <span class="sb-label">Time</span>
+          <span class="sb-val" id="res-time">0s</span>
+        </div>
+        <div class="stat-box">
+          <span class="sb-label">Errors</span>
+          <span class="sb-val danger-text" id="res-errors">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="sb-label">Characters</span>
+          <span class="sb-val" id="res-chars">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="sb-label">Previous Best</span>
+          <span class="sb-val" id="res-prev-best">0 WPM</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btn-result-restart">Next Test <kbd>Enter</kbd></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM TEXT MODAL -->
+  <div class="modal-backdrop" id="modal-custom">
+    <div class="modal-card">
+      <h3>Custom Text Practice</h3>
+      <p class="modal-sub">Paste your target text below to practice.</p>
+      <textarea id="custom-text-input" class="custom-textarea" rows="5" placeholder="Type or paste custom text here..."></textarea>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-custom-cancel">Cancel</button>
+        <button class="btn btn-primary" id="btn-custom-apply">Start Test</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div class="modal-backdrop" id="modal-settings">
+    <div class="modal-card settings-card">
+      <h3>Settings</h3>
+      <div class="settings-list">
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <span class="setting-title">Accent Theme</span>
+            <span class="setting-desc">Choose color palette</span>
+          </div>
+          <select id="setting-accent" class="setting-select">
+            <option value="cyan">Electric Cyan</option>
+            <option value="violet">Velvet Violet</option>
+            <option value="emerald">Cyber Emerald</option>
+            <option value="amber">Sunset Amber</option>
+          </select>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <span class="setting-title">Sound Effects</span>
+            <span class="setting-desc">Play tactile audio on keystrokes</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="setting-sound" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <span class="setting-title">Virtual Keyboard</span>
+            <span class="setting-desc">Display interactive layout</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="setting-keyboard" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <span class="setting-title">Smooth Caret</span>
+            <span class="setting-desc">Enable smooth cursor transitions</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="setting-smooth-caret" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <span class="setting-title">Font Size</span>
+            <span class="setting-desc">Adjust text display size</span>
+          </div>
+          <select id="setting-fontsize" class="setting-select">
+            <option value="1.5rem">Small</option>
+            <option value="2rem" selected>Medium</option>
+            <option value="2.5rem">Large</option>
+          </select>
+        </div>
+
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btn-settings-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
